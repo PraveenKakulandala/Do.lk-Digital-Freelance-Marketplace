@@ -198,3 +198,109 @@ class _PaymentScreenState extends State<PaymentScreen> {
       ],
     );
   }
+
+   Widget _buildStep(bool isActive) {
+    return CircleAvatar(
+      radius: 10,
+      backgroundColor: isActive
+          ? const Color(0xFF00B31E)
+          : const Color.fromARGB(255, 186, 237, 175),
+    );
+  }
+
+  Widget _buildLine() {
+    return Container(
+      width: 70,
+      height: 2,
+      color: const Color.fromARGB(255, 16, 234, 20),
+    );
+  }
+
+  Widget _buildOrderSummaryCard() {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: const BorderSide(color: Colors.black, width: 1.8),
+      ),
+      elevation: 2,
+      child: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            decoration: const BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12),
+                topRight: Radius.circular(12),
+              ),
+            ),
+            child: const Center(
+              child: Text(
+                'Order Summary',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Package:'),
+                    Text(
+                      widget.package['title'],
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Subtotal:'),
+                    Text('\$${widget.package['price'].toStringAsFixed(2)}'),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: const [
+                    Text('Service Fee:'),
+                    Text('\$10.00'),
+                  ],
+                ),
+                const Divider(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Total:',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      '\$${widget.totalAmount.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Color(0xFF00B31E),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }

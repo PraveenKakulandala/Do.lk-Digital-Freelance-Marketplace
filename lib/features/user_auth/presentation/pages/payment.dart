@@ -304,3 +304,173 @@ class _PaymentScreenState extends State<PaymentScreen> {
       ),
     );
   }
+  Widget _buildPaymentOptionsCard() {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: const BorderSide(color: Colors.black, width: 1.8),
+      ),
+      elevation: 2,
+      child: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            decoration: const BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12),
+                topRight: Radius.circular(12),
+              ),
+            ),
+            child: const Center(
+              child: Text(
+                'Add Payment Method',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          _buildRadioTile('Credit or Debit', 'assets/contactless.png'),
+          _buildRadioTile('Paypal', 'assets/paypal.png'),
+          _buildRadioTile('Google', 'assets/google.png'),
+          _buildRadioTile('Crypto', 'assets/cryptocurrency.png'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRadioTile(String value, String imageAsset) {
+    return RadioListTile<String>(
+      value: value,
+      groupValue: selectedPayment,
+      onChanged: (val) => setState(() => selectedPayment = val!),
+      title: Row(
+        children: [
+          Image.asset(
+            imageAsset,
+            width: 30,
+            height: 30,
+          ),
+          const SizedBox(width: 8),
+          Text(value),
+        ],
+      ),
+      activeColor: const Color(0xFF00B31E),
+    );
+  }
+
+  Widget _buildWarningText() {
+    return const Text(
+      'Please review your selected payment method before proceeding. Ensure all details are correct to avoid any delays. Once confirmed, the payment will be processed securely.',
+      style: TextStyle(fontSize: 13, color: Colors.black87, height: 1.5),
+      textAlign: TextAlign.center,
+    );
+  }
+
+  Widget _buildConfirmButton(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: () {
+          _showFakePaymentGateway(context);
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFF00B31E),
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+        child: const Text(
+          'Order',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showFakePaymentGateway(BuildContext context) {
+    if (selectedPayment == 'Credit or Debit') {
+      _showCreditCardEntry(context);
+    } else {
+      _showAlternativePaymentMethod(context);
+    }
+  }
+
+  void _showCreditCardEntry(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.85,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Enter Card Details',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+            const Divider(),
+            const SizedBox(height: 20),
+            _buildCreditCardWidget(),
+            const SizedBox(height: 30),
+            _buildCardForm(),
+            const Spacer(),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  _processPayment(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF00B31E),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: Text(
+                  'PAY \$${widget.totalAmount.toStringAsFixed(2)}',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }

@@ -628,5 +628,205 @@ class OrderScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 30),
+            
+                  // Confirm button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PaymentScreen(
+                        gigData: gigData,
+                        package: selectedPackage,
+                        totalAmount: totalAmount,
+                      ),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF00B31E),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Text(
+                  'Confirm Order',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTopProfileCard() {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 6,
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 98, 238, 121),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundImage: NetworkImage(
+                          gigData['sellerImage'] ?? 'assets/kasun.jpg',
+                        ),
+                        onBackgroundImageError: (, _) =>
+                        const Icon(Icons.person),
+                      ),
+                      const SizedBox(width: 12),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                gigData['sellerName'] ?? 'Seller',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Color.fromARGB(255, 7, 7, 7),
+                                ),
+                              ),
+                              const SizedBox(width: 5),
+                              const Icon(Icons.verified, size: 18),
+                            ],
+                          ),
+                          const SizedBox(height: 1),
+                          Text(
+                            gigData['sellerTitle'] ?? 'Service Provider',
+                            style: const TextStyle(
+                              color: Color.fromARGB(179, 9, 9, 9),
+                              fontSize: 13,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    gigData['category'] ?? 'Service',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                      color: Color.fromARGB(255, 11, 10, 10),
+                    ),
+                  ),
+                  const SizedBox(height: 1),
+                  Text(
+                    gigData['description'] ?? 'No description available',
+                    style: const TextStyle(fontSize: 12, height: 1.4),
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStep(bool isActive) {
+    return CircleAvatar(
+      radius: 10,
+      backgroundColor: isActive
+          ? const Color(0xFF00B31E)
+          : const Color.fromARGB(255, 186, 237, 175),
+    );
+  }
+
+  Widget _buildLine() {
+    return Container(
+      width: 70,
+      height: 2,
+      color: const Color.fromARGB(255, 16, 234, 20),
+    );
+  }
+
+  Widget _buildPriceRow(String title, String amount, {bool isTotal = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 0.5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
+              fontSize: isTotal ? 16 : 14,
+            ),
+          ),
+          Text(
+            amount,
+            style: TextStyle(
+              fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
+              fontSize: isTotal ? 16 : 14,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPriceRowWithLine(
+      String title,
+      String amount, {
+        bool isTotal = false,
+      }) {
+    return Column(
+      children: [
+        Container(width: double.infinity, height: 1, color: Colors.black),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
+                  fontSize: isTotal ? 16 : 14,
+                  color: isTotal ? const Color(0xFF00B31E) : Colors.black,
+                ),
+              ),
+              Text(
+                amount,
+                style: TextStyle(
+                  fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
+                  fontSize: isTotal ? 16 : 14,
+                  color: isTotal ? const Color(0xFF00B31E) : Colors.black,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
 
 

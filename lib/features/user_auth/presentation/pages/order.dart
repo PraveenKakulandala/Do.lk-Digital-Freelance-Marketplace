@@ -220,4 +220,91 @@ class Order extends StatelessWidget {
                 ),
 
                 const SizedBox(height: 20),
+                  // Rating and Price
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Column(
+                      children: [
+                        const Icon(Icons.star, color: Colors.amber, size: 24),
+                        const SizedBox(height: 4),
+                        Text(
+                          gigData['rating']?.toStringAsFixed(1) ?? '5.0',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        const Icon(Icons.attach_money,
+                            color: Colors.green, size: 24),
+                        const SizedBox(height: 4),
+                        Text(
+                          'From \$${packages[0]['price'].toStringAsFixed(2)}',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        const Icon(Icons.timer, color: Colors.blue, size: 24),
+                        const SizedBox(height: 4),
+                        Text(
+                          gigData['deliveryTime'] ?? '3 Days',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 20),
+                const Divider(height: 1, thickness: 1),
+                const SizedBox(height: 20),
+
+                // Price Packages Section
+                const Text(
+                  'Select Package',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 12),
+
+                // Price Buttons
+                Row(
+                  children: List.generate(packages.length, (i) {
+                    return Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _selectedPriceIndex == i
+                                ? primaryGreen
+                                : Colors.grey[300],
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          onPressed: () {
+                            setState(() => _selectedPriceIndex = i);
+                          },
+                          child: Text(
+                            '\$${packages[i]['price'].toStringAsFixed(0)}',
+                            style: TextStyle(
+                              color: _selectedPriceIndex == i
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+
+                const SizedBox(height: 20),
 

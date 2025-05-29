@@ -1,12 +1,11 @@
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-
 import 'package:untitled12/features/user_auth/presentation/pages/home_page.dart';
 import 'search_screen.dart';
 import 'orders_screen.dart';
 import 'profile_screen.dart';
+import 'call_screen.dart'; // Add this import
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -198,6 +197,24 @@ class _ChatScreenState extends State<ChatScreen> {
     return true;
   }
 
+  // New method to initiate a call
+  void _initiateCall(bool isVideoCall) {
+    if (_selectedChat == null) return;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => CallScreen(
+              channelName: 'chat_${_selectedChat!['id']}',
+              isVideoCall: isVideoCall,
+              callerName: _selectedChat!['name'],
+              callerAvatar: _selectedChat!['avatar'],
+            ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -208,74 +225,78 @@ class _ChatScreenState extends State<ChatScreen> {
           elevation: 2,
           shadowColor: Colors.black,
           titleSpacing: 0,
-          leading: _showChatInterface
-              ? IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () {
-              setState(() {
-                _showChatInterface = false;
-              });
-            },
-          )
-              : Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Image.asset(
-              'assets/Short White.png',
-              width: 40,
-              height: 40,
-            ),
-          ),
-          title: _showChatInterface
-              ? Row(
-            children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundImage: AssetImage(
-                  _selectedChat?['avatar'] ?? 'assets/profile_placeholder.png',
-                ),
-              ),
-              const SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    _selectedChat?['name'] ?? '',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+          leading:
+              _showChatInterface
+                  ? IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.white),
+                    onPressed: () {
+                      setState(() {
+                        _showChatInterface = false;
+                      });
+                    },
+                  )
+                  : Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.asset(
+                      'assets/Short White.png',
+                      width: 40,
+                      height: 40,
                     ),
                   ),
-                  Text(
-                    'Online',
+          title:
+              _showChatInterface
+                  ? Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 20,
+                        backgroundImage: AssetImage(
+                          _selectedChat?['avatar'] ??
+                              'assets/profile_placeholder.png',
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _selectedChat?['name'] ?? '',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            'Online',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[200],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  )
+                  : const Text(
+                    'Messages',
                     style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[200],
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ],
-              ),
-            ],
-          )
-              : const Text(
-            'Messages',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          actions: _showChatInterface
-              ? [
-            IconButton(
-              icon: const Icon(Icons.phone, color: Colors.white),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: const Icon(Icons.videocam, color: Colors.white),
-              onPressed: () {},
-            ),
-          ]
-              : null,
+          actions:
+              _showChatInterface
+                  ? [
+                    IconButton(
+                      icon: const Icon(Icons.phone, color: Colors.white),
+                      onPressed: () => _initiateCall(false), // Voice call
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.videocam, color: Colors.white),
+                      onPressed: () => _initiateCall(true), // Video call
+                    ),
+                  ]
+                  : null,
         ),
         body: _showChatInterface ? _buildChatInterface() : _buildChatList(),
         bottomNavigationBar: Padding(
@@ -388,7 +409,10 @@ class _ChatScreenState extends State<ChatScreen> {
                         style: TextStyle(
                           color: Colors.grey[800],
                           fontSize: 14,
-                          fontWeight: chat['unread'] > 0 ? FontWeight.bold : FontWeight.normal,
+                          fontWeight:
+                              chat['unread'] > 0
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -429,7 +453,8 @@ class _ChatScreenState extends State<ChatScreen> {
             controller: _scrollController,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
             itemCount: _chatMessages[id]!.length,
-            itemBuilder: (context, index) => _buildMessage(_chatMessages[id]![index]),
+            itemBuilder:
+                (context, index) => _buildMessage(_chatMessages[id]![index]),
           ),
         ),
         Container(
@@ -484,7 +509,8 @@ class _ChatScreenState extends State<ChatScreen> {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
-        mainAxisAlignment: message.isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment:
+            message.isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!message.isMe)
@@ -497,9 +523,10 @@ class _ChatScreenState extends State<ChatScreen> {
               margin: const EdgeInsets.symmetric(horizontal: 8),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               decoration: BoxDecoration(
-                color: message.isMe
-                    ? const Color.fromARGB(221, 13, 216, 23)
-                    : Colors.grey[200],
+                color:
+                    message.isMe
+                        ? const Color.fromARGB(221, 13, 216, 23)
+                        : Colors.grey[200],
                 borderRadius: BorderRadius.only(
                   topLeft: const Radius.circular(20),
                   topRight: const Radius.circular(20),
@@ -509,7 +536,9 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
               child: Column(
                 crossAxisAlignment:
-                message.isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                    message.isMe
+                        ? CrossAxisAlignment.end
+                        : CrossAxisAlignment.start,
                 children: [
                   if (message.image != null)
                     Image.file(
@@ -560,6 +589,6 @@ class _ChatScreenState extends State<ChatScreen> {
         size: 30,
       ),
       onPressed: () => _onItemTapped(index),
-    );
-  }
+    );
+  }
 }

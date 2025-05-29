@@ -65,4 +65,48 @@ class Order extends StatelessWidget {
         ],
       },
     ];
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(120),
+        child: Column(
+          children: [
+            AppBar(
+              backgroundColor: const Color.fromARGB(221, 255, 255, 255),
+              elevation: 2,
+              shadowColor: Colors.black,
+              titleSpacing: 0,
+              leading: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.asset(
+                  'assets/Short Green.png',
+                  width: 40,
+                  height: 40,
+                ),
+              ),
+            ),
+            Container(
+              color: primaryGreen,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 1),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                  Text(
+                    gigData['category'] ?? 'Service Details',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(width: 48), // For balance
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
 

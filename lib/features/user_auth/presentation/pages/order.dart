@@ -435,5 +435,198 @@ class Order extends StatelessWidget {
     );
   }
 }
+class OrderScreen extends StatelessWidget {
+  final Map<String, dynamic> gigData;
+  final Map<String, dynamic> selectedPackage;
+
+  const OrderScreen({
+    super.key,
+    required this.gigData,
+    required this.selectedPackage,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final double totalAmount = (selectedPackage['price'] + 10).toDouble();
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(120),
+        child: Column(
+          children: [
+            AppBar(
+              backgroundColor: const Color.fromARGB(221, 255, 255, 255),
+              elevation: 2,
+              shadowColor: Colors.black,
+              titleSpacing: 0,
+              leading: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.asset(
+                  'assets/Short Green.png',
+                  width: 40,
+                  height: 40,
+                ),
+              ),
+            ),
+            Container(
+              color: const Color(0xFF00B31E),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 1),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                  const Text(
+                    'Order Details',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(width: 48),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Progress indicator
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildStep(true),
+                _buildLine(),
+                _buildStep(false),
+                _buildLine(),
+                _buildStep(false),
+              ],
+            ),
+            const SizedBox(height: 20),
+
+            // Add the profile card here
+            _buildTopProfileCard(),
+            const SizedBox(height: 20),
+
+            // Order details card
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+                side: const BorderSide(
+                  color: Colors.black,
+                  width: 1.8,
+                ),
+              ),
+              elevation: 2,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 16),
+                    decoration: const BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(12),
+                        topRight: Radius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      'Order details',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              selectedPackage['title'],
+                              style: TextStyle(
+                                color: const Color(0xFF00B31E),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                            Text(
+                              '\$${selectedPackage['price'].toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        ...selectedPackage['details'].map<Widget>((detail) =>
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 4),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Icon(Icons.check_circle,
+                                      size: 18, color: Colors.green),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      detail,
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ).toList(),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 16),
+                    color: Colors.black,
+                    child: const Text(
+                      'Order summary',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        _buildPriceRow('Subtotal',
+                            '\$${selectedPackage['price'].toStringAsFixed(2)}'),
+                        _buildPriceRow('Service Fee', '\$10'),
+                        _buildPriceRowWithLine(
+                          'Total',
+                          '\$${(totalAmount).toStringAsFixed(2)}',
+                          isTotal: true,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 30),
 
 

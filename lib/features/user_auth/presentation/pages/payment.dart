@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:untitled12/features/user_auth/presentation/pages/home_page.dart';
+import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
+import 'package:untitled12/features/services/stripe_service.dart';
 
 class PaymentScreen extends StatefulWidget {
   final Map<String, dynamic> gigData;
@@ -17,9 +20,69 @@ class PaymentScreen extends StatefulWidget {
   State<PaymentScreen> createState() => _PaymentScreenState();
 }
 
+class _HomePageState extends State<HomePage> {
+  bool _isProcessing = false;
+
+  void _handlePayment() async {
+    setState(() => _isProcessing = true);
+
+    try {
+      await StripeService.instance.makePayment();
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("Payment successful")));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Payment failed: $e")));
+      }
+    } finally {
+      if (mounted) setState(() => _isProcessing = false);
+    }
+  }
+
+  void _handleCryptoPayment() async {
+    setState(() => _isProcessing = true);
+
+    try {
+      final response = await http.post(
+        Uri.parse(
+          'http://192.168.252.156:3000/create-invoice',
+        ), // Your backend URL
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'price': 25.0, 'currency': 'USD'}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final url = data['url'];
+        if (await canLaunch(url)) {
+          await launch(url, forceSafariVC: false, forceWebView: false);
+        } else {
+          throw 'Could not launch invoice URL';
+        }
+      } else {
+        throw 'Failed to create invoice';
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Crypto payment failed: $e')));
+      }
+    } finally {
+      if (mounted) setState(() => _isProcessing = false);
+    }
+  }
+
+
 class _PaymentScreenState extends State<PaymentScreen> {
   String selectedPayment = 'Credit or Debit';
   bool _isProcessing = false;
+
 
   @override
   Widget build(BuildContext context) {

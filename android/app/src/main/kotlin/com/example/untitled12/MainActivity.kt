@@ -1,5 +1,5 @@
-package com.example.untitled12
+package com.example.stripapitest2
 
-import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.FlutterFragmentActivity
 
-class MainActivity : FlutterActivity()
+class MainActivity : FlutterFragmentActivity()
